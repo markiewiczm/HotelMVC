@@ -1,0 +1,22 @@
+﻿@using HotelMVC.Services
+@if (SessionServicePersister.User != null)
+{
+    using (Html.BeginForm("Logout", "Home", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                @Html.ActionLink("Witaj " + SessionServicePersister.User.UserName + "!", "Index", "Home", routeValues: null, htmlAttributes: new { title = "Manage" })
+            </li>
+            <li><a href=@Url.Action("Logout", "Home")>Wyloguj</a></li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Zarejestruj", "Register", "Home", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Zaloguj", "Login", "Home", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}
