@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using HotelMVC.Helpers;
+@using HotelMVC.Static;
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -19,7 +21,15 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink(" ", "Index", "Home", null, new { @class = "glyphicon glyphicon-home" })</li>                  
+                    <li>@Html.ActionLink(" ", "Index", "Home", null, new { @class = "glyphicon glyphicon-home" })</li>
+                    @if (RoleHelper.IsInRole(ConstValues.NormalUser))
+                    {
+                        <li>@Html.ActionLink("Rezerwuj", "Index", "Reservation")</li>
+                    }
+                    @if (RoleHelper.IsInRole(ConstValues.Admin))
+                    {
+                        <li>@Html.ActionLink("Panel recepcjonisty", "ManageReservations", "Reservation")</li>
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

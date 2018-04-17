@@ -5,7 +5,7 @@ using System.Web.Mvc;
 namespace HotelMVC.Controllers
 {
     public class HomeController : Controller
-    {
+    {               
         public ActionResult Index()
         {
             return View();
@@ -21,7 +21,7 @@ namespace HotelMVC.Controllers
             var user = UserService.SignIn(userModel);
             if (user != null)
             {
-                SessionServicePersister.User = user;
+                SignInUser(user);
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -29,7 +29,7 @@ namespace HotelMVC.Controllers
                 ViewBag.Error = "Niepoprawne dane logowania";
                 return View(user);
             }
-        }
+        }   
 
         public ActionResult Register()
         {
@@ -43,6 +43,7 @@ namespace HotelMVC.Controllers
             {
                 if (UserService.Register(userModel))
                 {
+                    SignInUser(userModel);
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -56,10 +57,20 @@ namespace HotelMVC.Controllers
             }
         }
 
+        private void SignInUser(UserModel user)
+        {
+            Session.Timeout = 15;
+            Session.Add("user", user);
+        }
+
         public ActionResult Logout()
         {
-            SessionServicePersister.User = null;
+            Session.Remove("user");
             return RedirectToAction("Index", "Home");
+        }
+        public ActionResult AccessDenied()
+        {
+            return View();
         }
 
     }
