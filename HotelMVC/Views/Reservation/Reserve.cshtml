@@ -1,0 +1,76 @@
+﻿@using HotelMVC.Services
+@model HotelMVC.Models.BookingModel
+
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Rezerwacja</h2>
+<hr />
+
+<div class="container">
+    <p>
+        Od:
+        <input class="datepicker" id="CheckIn" name="CheckIn" data-date-format="dd-mm-yyyy">
+        Do:
+        <input class="datepicker" id="CheckOut" name="CheckOut" data-date-format="dd-mm-yyyy">
+        <button class="btn btn-primary" id="btnAvailableRooms">Sprawdź</button>
+    </p>
+
+</div>
+
+<div class="container">
+    <div id="result"></div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $('.datepicker').datepicker({
+            language: "pl"
+        });
+
+        $("#btnAvailableRooms").click(function () {
+            var checkIn = $("#CheckIn").val();
+            var checkOut = $("#CheckOut").val();
+
+            $.ajax({
+                url: '@Url.Action("CheckForAvailableRooms", "Reservation")',
+                data: { CheckIn: checkIn, CheckOut: checkOut },
+                success: function (data) {
+                    $("#result").empty();
+                    $("#result").append('<h3>Wyniki: </h3>');
+                    $("#result").append('<hr/>');
+
+                    for (var i = 0; i < data.length; i++){
+                        $('<input type="radio" value=' + data[i].Id + ' name="radiobtn"> ' +  data[i].RoomDescription  + '</input>').appendTo('#result');
+                        $("#result").append('<br/>');
+                    }
+
+                    $("#result").append('<br/>');
+                    $("#result").append('<button class="btn btn-info" id="btnCheckIn">Zarezerwuj</button>');
+                    $("#btnCheckIn").on("click", checkInHandler);
+                }
+
+            });
+
+        });
+
+        function checkInHandler () {
+
+            var roomId = $('input[name="radiobtn"]').filter(':checked').val();
+            var checkIn = $("#CheckIn").val();
+            var checkOut = $("#CheckOut").val();
+            var idUser =  @SessionHelper.GetUserId();
+
+            $.ajax({
+                url: '@Url.Action("CheckIn", "Reservation")',
+                data: { IdRoom: roomId, IdUser : idUser, CheckIn : checkIn, CheckOut : checkOut },
+                success: function (data) {
+                    window.location = '/Reservation/Summary?id=' + data.Id;
+                }
+            });
+        }
+    </script>
+}
