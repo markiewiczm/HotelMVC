@@ -8,6 +8,10 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
+
+
+
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -24,7 +28,7 @@
                     <li>@Html.ActionLink(" ", "Index", "Home", null, new { @class = "glyphicon glyphicon-home" })</li>
                     @if (RoleHelper.IsInRole(ConstValues.NormalUser))
                     {
-                        <li>@Html.ActionLink("Rezerwuj", "Index", "Reservation")</li>
+                        <li>@Html.ActionLink("Rezerwuj", "Reserve", "Reservation")</li>
                     }
                     @if (RoleHelper.IsInRole(ConstValues.Admin))
                     {

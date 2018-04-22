@@ -15,6 +15,9 @@ namespace HotelMVC.DataContext
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
+        public virtual DbSet<Room> Rooms { get; set; }
+        public virtual DbSet<Reservation> Reservations { get; set; }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -28,6 +31,12 @@ namespace HotelMVC.DataContext
                 .HasMany(e => e.UserRoles)
                 .WithRequired(e => e.User)
                 .HasForeignKey(e => e.IdUser)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Room>()
+                .HasMany(e => e.Reservations)
+                .WithRequired(e => e.Room)
+                .HasForeignKey(e => e.IdRoom)
                 .WillCascadeOnDelete(false);
         }
     }

@@ -19,7 +19,7 @@ namespace HotelMVC.Services
                 if (user != null && user.Password == Hash(userModel.Password))
                 {
                     var userRoles = context.UserRoles.Where(x => x.IdUser == user.Id).FirstOrDefault(); //1 to 1
-                    return new UserModel() { UserName = user.UserName, Role = userRoles.Role.Name };
+                    return new UserModel() { UserName = user.UserName, Role = userRoles.Role.Name, Id = user.Id };
                 }
                 return null;
             }
