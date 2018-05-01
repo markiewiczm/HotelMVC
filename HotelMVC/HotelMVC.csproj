@@ -157,11 +157,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\DateHelper.cs" />
     <Compile Include="Helpers\RoleHelper.cs" />
     <Compile Include="Models\BookingModel.cs" />
     <Compile Include="Models\RoomModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ReservationService.cs" />
     <Compile Include="Services\SessionHelper.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Static\ConstValues.cs" />
@@ -346,7 +348,8 @@
     <Content Include="Views\Home\AccessDenied.cshtml" />
     <Content Include="Views\Reservation\Reserve.cshtml" />
     <Content Include="Views\Reservation\ManageReservations.cshtml" />
-    <Content Include="Views\Reservation\Summary.cshtml" />
+    <Content Include="Views\Reservation\Success.cshtml" />
+    <Content Include="Views\Reservation\Failure.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

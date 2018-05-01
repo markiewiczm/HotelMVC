@@ -58,19 +58,44 @@
         });
 
         function checkInHandler () {
+            if (confirm("Are you sure?") == true) {
+                var roomId = $('input[name="radiobtn"]').filter(':checked').val();
+                var checkIn = $("#CheckIn").val();
+                var checkOut = $("#CheckOut").val();
+                var idUser =  @SessionHelper.GetUserId();
 
-            var roomId = $('input[name="radiobtn"]').filter(':checked').val();
-            var checkIn = $("#CheckIn").val();
-            var checkOut = $("#CheckOut").val();
-            var idUser =  @SessionHelper.GetUserId();
+                $.ajax({
+                    url: '@Url.Action("CheckIn", "Reservation")',
+                    data: { IdRoom: roomId, IdUser: idUser, CheckIn: checkIn, CheckOut: checkOut },
+                    success: function (resp) {
+                        if (resp.Id != undefined) {
+                            window.location = '/Reservation/Success?idReservation=' + resp.Id;
+                        }
+                        else {
+                            window.location = '/Reservation/Failure?msg=' + resp.msg;
+                        }
+                    }
 
-            $.ajax({
-                url: '@Url.Action("CheckIn", "Reservation")',
-                data: { IdRoom: roomId, IdUser : idUser, CheckIn : checkIn, CheckOut : checkOut },
-                success: function (data) {
-                    window.location = '/Reservation/Summary?id=' + data.Id;
-                }
-            });
+                });
+            }
         }
     </script>
 }
+
+    @*C#:
+
+return RedirectToAction("Action", "Controller", new { myRouteValue = foo});
+JS:
+
+ $.ajax({
+    type: "POST",
+    url: "./PostController/PostAction",
+    data: data,
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    complete: function (result) {
+        if (result.responseText) {
+            $('body').html(result.responseText);
+        }
+    }
+});*@
