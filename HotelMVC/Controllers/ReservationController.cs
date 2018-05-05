@@ -4,7 +4,6 @@ using HotelMVC.Models;
 using HotelMVC.Services;
 using HotelMVC.Static;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -49,28 +48,46 @@ namespace HotelMVC.Controllers
             var checkInDate = DateHelper.ParseDateFromString(CheckIn);
             var checkOutDate = DateHelper.ParseDateFromString(CheckOut);
 
-            var reservationSucceded = new ReservationService().CheckIn(checkInDate, checkOutDate, IdRoom);
-
-            if (reservationSucceded) {
-                var idReservation = new ReservationService().AddReservation(checkInDate, checkOutDate, IdRoom, IdUser);
-                return Json(new { Id = idReservation }, JsonRequestBehavior.AllowGet);
-            }
-            else
+            try
             {
-                return Json(new { msg = "Room is not available" }, JsonRequestBehavior.AllowGet);
-               // return RedirectToAction("Failure", new { msg = "Room is not available" });
-            }       
+                var reservationSucceded = new ReservationService().CheckIn(checkInDate, checkOutDate, IdRoom);
+                if (reservationSucceded)
+                {
+                    new ReservationService().AddReservation(checkInDate, checkOutDate, IdRoom, IdUser, out int idReservation);                 
+                    return Json(new { Id = idReservation }, JsonRequestBehavior.AllowGet);
+                    
+                }
+                else
+                {
+                    return Json(new { msg = "Pokój nie dostępny" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                //TODO: log exception
+                return Json(new { msg = "Coś poszło nie tak" }, JsonRequestBehavior.AllowGet);
+            }
+             
         }
         [RoleAuth(Roles = ConstValues.NormalUser)]
         public ActionResult Success(int idReservation)
         {
+            ViewBag.Id = idReservation;
             return View();
         }
 
         [RoleAuth(Roles = ConstValues.NormalUser)]
         public ActionResult Failure(string msg)
         {
+            ViewBag.Msg = msg;
             return View();
+        }
+
+        [RoleAuth(Roles = ConstValues.NormalUser)]
+        public ActionResult MyReservation()
+        {
+            var viewModel = new ReservationService().GetMyReservation(SessionHelper.GetUserId());
+            return View(viewModel);
         }
 
         [RoleAuth(Roles = ConstValues.Admin)]

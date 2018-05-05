@@ -35,6 +35,17 @@
             var checkIn = $("#CheckIn").val();
             var checkOut = $("#CheckOut").val();
 
+            if (checkIn == "" || checkOut == "")
+            {
+                alert('Wypełnij wszystkie pola');
+                return;
+            }
+
+            if (checkIn >= checkOut ) {
+                alert('Data początku rezerwacji nie może być później niż data końca rezerwacji');
+                return;
+            }
+
             $.ajax({
                 url: '@Url.Action("CheckForAvailableRooms", "Reservation")',
                 data: { CheckIn: checkIn, CheckOut: checkOut },
@@ -43,14 +54,22 @@
                     $("#result").append('<h3>Wyniki: </h3>');
                     $("#result").append('<hr/>');
 
-                    for (var i = 0; i < data.length; i++){
-                        $('<input type="radio" value=' + data[i].Id + ' name="radiobtn"> ' +  data[i].RoomDescription  + '</input>').appendTo('#result');
+                    for (var i = 0; i < data.length; i++) {
+                        $('<input type="radio" value=' + data[i].Id + ' name="radiobtn"> ' + data[i].RoomDescription + '</input>').appendTo('#result');
                         $("#result").append('<br/>');
                     }
 
                     $("#result").append('<br/>');
-                    $("#result").append('<button class="btn btn-info" id="btnCheckIn">Zarezerwuj</button>');
-                    $("#btnCheckIn").on("click", checkInHandler);
+
+                    if (data.length > 0) {
+                        $("#result").append('<button class="btn btn-info" id="btnCheckIn">Zarezerwuj</button>');
+                        $("#btnCheckIn").on("click", checkInHandler);
+                    }
+                    else {
+                        $("#result").empty();
+                        $("#result").append('<hr/>');
+                        $("#result").append('<div class="alert alert-danger">Brak wolnych pokoi w podanym terminie</div>');
+                    }
                 }
 
             });
@@ -63,6 +82,12 @@
                 var checkIn = $("#CheckIn").val();
                 var checkOut = $("#CheckOut").val();
                 var idUser =  @SessionHelper.GetUserId();
+
+                if (roomId == undefined) {
+                    alert('You need pick a room');
+                    return;
+                }
+
 
                 $.ajax({
                     url: '@Url.Action("CheckIn", "Reservation")',

@@ -12,7 +12,7 @@ namespace HotelMVC.Services
     {
         public List<BookingModel> GetAvaiableRooms(DateTime checkIn, DateTime checkOut)
         {
-            using(HotelContext ctx = new HotelContext())
+            using (HotelContext ctx = new HotelContext())
             {
                 var results = ctx.Database.SqlQuery<BookingModel>("EXECUTE CheckForAvaiableRooms @checkIn, @checkOut",
                     new SqlParameter("@checkIn", checkIn), new SqlParameter("@checkOut", checkOut)).ToList();
@@ -20,20 +20,52 @@ namespace HotelMVC.Services
             }
         }
 
-        public bool CheckIn(DateTime checkIn, DateTime checkOut,int idRoom)
+        public bool CheckIn(DateTime checkIn, DateTime checkOut, int idRoom)
         {
             using (HotelContext ctx = new HotelContext())
             {
-                var results =  ctx.Database.SqlQuery<BookingModel>("EXECUTE CheckForCheckIn @checkIn, @checkOut, @roomId",
+                var results = ctx.Database.SqlQuery<BookingModel>("EXECUTE CheckForCheckIn @checkIn, @checkOut, @roomId",
                      new SqlParameter("@checkIn", checkIn), new SqlParameter("@checkOut", checkOut), new SqlParameter("@roomId", idRoom)).ToList();
                 return results.Any();
 
             }
         }
 
-        internal int AddReservation(DateTime checkInDate, DateTime checkOutDate, int idRoom, int idUser)
+        public void AddReservation(DateTime checkInDate, DateTime checkOutDate, int idRoom, int idUser, out int idReservation)
         {
-            return 1;
+            using (HotelContext ctx = new HotelContext())
+            {
+                var reservationEntity = new Reservation()
+                {
+                    CheckIn = checkInDate,
+                    CheckOut = checkOutDate,
+                    IdRoom = idRoom,
+                    IdUser = idUser,
+                    Status = ReservationStatus.New
+                };
+                ctx.Reservations.Add(reservationEntity);
+                ctx.SaveChanges();
+
+                idReservation = reservationEntity.Id;
+            }
+        }
+
+        public List<MyReservationModel> GetMyReservation(int idUser)
+        {
+            using (HotelContext ctx = new HotelContext())
+            {
+                var reservation = ctx.Reservations.Where(x => x.IdUser == idUser);
+                var reservationVM =  reservation.Select(x => new MyReservationModel
+                {
+                    Id = x.Id,
+                    RoomNo = x.Room.RoomNo,
+                    CheckIn = x.CheckIn,
+                    CheckOut = x.CheckOut,
+                    Status = x.Status.ToString()
+
+                }).ToList();
+                return reservationVM;
+            }
         }
     }
 }

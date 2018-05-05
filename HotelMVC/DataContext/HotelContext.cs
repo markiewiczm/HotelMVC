@@ -33,6 +33,12 @@ namespace HotelMVC.DataContext
                 .HasForeignKey(e => e.IdUser)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Reservations)
+                .WithRequired(e => e.User)
+                .HasForeignKey(e => e.IdUser)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<Room>()
                 .HasMany(e => e.Reservations)
                 .WithRequired(e => e.Room)

@@ -8,12 +8,9 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
-
-
-
+  
 </head>
-<body>
+<body>   
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -29,6 +26,7 @@
                     @if (RoleHelper.IsInRole(ConstValues.NormalUser))
                     {
                         <li>@Html.ActionLink("Rezerwuj", "Reserve", "Reservation")</li>
+                        <li>@Html.ActionLink("Moje rezerwacje", "MyReservation", "Reservation")</li>
                     }
                     @if (RoleHelper.IsInRole(ConstValues.Admin))
                     {
