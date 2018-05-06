@@ -5,18 +5,19 @@ using System.Web;
 
 namespace HotelMVC.Models
 {
-    public class MyReservationModel
+    public class ReservationModel
     {
         public int Id { get; set; }
 
         public string RoomNo { get; set; }
 
-        public DateTime CheckIn { get; set; }
+        public string CheckIn { get; set; }
 
-        public DateTime CheckOut { get; set; }
+        public string CheckOut { get; set; }
 
         public string Status { get; set; }
 
+        public string User { get; set; }
 
     }
 

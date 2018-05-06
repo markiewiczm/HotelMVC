@@ -1,4 +1,5 @@
-﻿
+﻿@model IEnumerable<HotelMVC.Models.ReservationModel>
+@using GridMvc.Html
 @{
     ViewBag.Title = "ManageReservations";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,3 +7,26 @@
 
 <h2>Panel recepcjonisty</h2>
 
+<hr />
+
+<link href="@Url.Content("~/Content/Gridmvc.css")" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-2.2.4.min.js"></script>
+<script src="@Url.Content("~/Scripts/gridmvc.min.js")" rel="stylesheet"></script>
+
+
+<div class="container">
+    @Html.Grid(Model).Columns(col =>
+{
+    col.Add().Titled(" ").SetWidth(5).Encoded(false).Sanitized(false).RenderValueAs(x => ("<a href='Delete/" + x.Id + "'" + "class='btn btn-danger btn-xs'>Usuń </a>"));
+    col.Add().Titled(" ").SetWidth(5).Encoded(false).Sanitized(false).RenderValueAs(x => ("<a href='Edit/" + x.Id + "'"  + "class='btn btn-success btn-xs'>Edycja </a>"));
+    //col.Add(c => c.Id).Titled("Id").Filterable(false).Sortable(true);
+    col.Add(c => c.User).Titled("Użytkownik").Filterable(true).Sortable(true);
+    col.Add(c => c.RoomNo).Titled("Nr pokoju").Filterable(true).Sortable(true);
+    col.Add(c => c.Status).Titled("Status").Filterable(true).Sortable(true);
+    col.Add(c => c.CheckIn).Titled("Początek rezerwacji").Filterable(true);
+    col.Add(c => c.CheckOut).Titled("Koniec rezerwacji").Filterable(true);
+
+
+})
+</div>

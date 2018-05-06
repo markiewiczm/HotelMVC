@@ -41,7 +41,7 @@
                 return;
             }
 
-            if (checkIn >= checkOut ) {
+            if (new Date(checkIn) >= new Date(checkOut)) {
                 alert('Data początku rezerwacji nie może być później niż data końca rezerwacji');
                 return;
             }

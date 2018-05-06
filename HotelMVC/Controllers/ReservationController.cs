@@ -10,7 +10,7 @@ using System.Web.Mvc;
 namespace HotelMVC.Controllers
 {
     public class ReservationController : Controller
-    {     
+    {
         [RoleAuth(Roles = ConstValues.NormalUser)]
         public ActionResult Reserve()
         {
@@ -25,10 +25,10 @@ namespace HotelMVC.Controllers
             var rawData = new ReservationService().GetAvaiableRooms(checkInDate, checkOutDate);
             var data = rawData.Select(x => new RoomModel
             {
-              Id = x.IdRoom.Value,
-              RoomDescription = x.Description,
-              Beds = x.Beds,
-              DailyPrice = x.DailyPrice
+                Id = x.IdRoom.Value,
+                RoomDescription = x.Description,
+                Beds = x.Beds,
+                DailyPrice = x.DailyPrice
 
             }).ToList();
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -53,9 +53,9 @@ namespace HotelMVC.Controllers
                 var reservationSucceded = new ReservationService().CheckIn(checkInDate, checkOutDate, IdRoom);
                 if (reservationSucceded)
                 {
-                    new ReservationService().AddReservation(checkInDate, checkOutDate, IdRoom, IdUser, out int idReservation);                 
+                    new ReservationService().AddReservation(checkInDate, checkOutDate, IdRoom, IdUser, out int idReservation);
                     return Json(new { Id = idReservation }, JsonRequestBehavior.AllowGet);
-                    
+
                 }
                 else
                 {
@@ -67,7 +67,7 @@ namespace HotelMVC.Controllers
                 //TODO: log exception
                 return Json(new { msg = "Coś poszło nie tak" }, JsonRequestBehavior.AllowGet);
             }
-             
+
         }
         [RoleAuth(Roles = ConstValues.NormalUser)]
         public ActionResult Success(int idReservation)
@@ -93,7 +93,38 @@ namespace HotelMVC.Controllers
         [RoleAuth(Roles = ConstValues.Admin)]
         public ActionResult ManageReservations()
         {
-            return View();
+            var viewModel = new ReservationService().GetAllReservation();
+            return View(viewModel);
+        }
+
+        [RoleAuth(Roles = ConstValues.Admin)]
+        public ActionResult Edit(int id)
+        {
+            var viewModel = new ReservationService().GetSingleReservation(id);
+            return View(viewModel);
+        }
+
+        [RoleAuth(Roles = ConstValues.Admin)]
+        [HttpPost]
+        public ActionResult Edit(ReservationModel model)
+        {
+            new ReservationService().UpdateReservation(model);
+            return RedirectToAction(nameof(ManageReservations));
+        }
+
+        [RoleAuth(Roles = ConstValues.Admin)]
+        public ActionResult Delete(int id)
+        {
+            var viewModel = new ReservationService().GetSingleReservation(id);
+            return View(viewModel);
+        }
+
+        [RoleAuth(Roles = ConstValues.Admin)]
+        [HttpPost]
+        public ActionResult Delete(ReservationModel model)
+        {
+            new ReservationService().DeleteReservation(model.Id);
+            return RedirectToAction(nameof(ManageReservations));
         }
     }
 }
